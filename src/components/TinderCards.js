@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TinderCard from 'react-tinder-card';
 
 import './TinderCards.css';
+import instance from '../axios';
 
 const TinderCards = () => {
   const swiped = (direction, nameToDelete) => {
@@ -13,20 +14,17 @@ const TinderCards = () => {
     console.log(`${name} left the screen`);
   };
 
-  const [people, setPeople] = useState([
-    {
-      id: 1,
-      name: 'Elon Musk',
-      url:
-        'https://upload.wikimedia.org/wikipedia/commons/e/ed/Elon_Musk_Royal_Society.jpg',
-    },
-    {
-      id: 2,
-      name: 'Jeff Bezos',
-      url:
-        'https://thumbor.forbes.com/thumbor/fit-in/416x416/filters%3Aformat%28jpg%29/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F5bb22ae84bbe6f67d2e82e05%2F0x0.jpg%3Fbackground%3D000000%26cropX1%3D560%26cropX2%3D1783%26cropY1%3D231%26cropY2%3D1455',
-    },
-  ]);
+  const [people, setPeople] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await instance.get('/cards');
+      setPeople(data);
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className='tinderCards'>
       <div className='tinderCards__cardContainer'>
@@ -40,7 +38,7 @@ const TinderCards = () => {
           >
             <div
               style={{
-                backgroundImage: `url(${person.url})`,
+                backgroundImage: `url(${person.imgUrl})`,
               }}
               className='card'
             >
